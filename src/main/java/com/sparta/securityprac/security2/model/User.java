@@ -15,8 +15,8 @@ public class User {
 
     //ID 자동으로 생성 및 증가
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long userid;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long userId;
 
     //nullable: null 허용 여부
     //unique: 중복 허용 여부 (false일 때 중복허용)

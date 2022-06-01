@@ -29,18 +29,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // 회원 관리 처리 API (POST /user/**) 에 대해 CSRF 무시
-        http.csrf()
-                .ignoringAntMatchers("/user/**");
+        http.csrf().disable();
+
 
 
         http.authorizeRequests()
-
                 // image 폴더를 login 없이 허용
                 .antMatchers("/images/**").permitAll()
                 // css 폴더를 login 없이 허용
                 .antMatchers("/css/**").permitAll()
                 // 회원가입 페이지 허용 GET방식만 허용
                 .antMatchers("/user/**").permitAll()
+                //인덱스 페이지 볼 수 있게
+                .antMatchers("/**").permitAll()
                 //어떤 요청이든 '인증'이 필요하다
                 .anyRequest().authenticated()
                 .and()
