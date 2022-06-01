@@ -16,36 +16,37 @@
     <script>
         $(document).ready(function () {
             getMessages();
+            getComments();
         })
 
         // 게시글을 불러옵니다.
         function getMessages() {
             $('#cards-box').empty();
-            let idx = location.href.split("boardId=")[1]; //localhost/detail.html?boardId=12
+            let idx = location.href.split("boardId=")[1]; //localhost/detail.html?id=12
             $.ajax({
                 type: "GET",
-                url: `/api/contents/${idx}`,
+                url: `/boards/detail/${idx}`,
                 data: {},
                 success: function (response) {
                     let board = response;
                     let boardId = board.boardId;
                     let writer = board.writer;
                     let title = board.title;
-                    let contents = board.contents;
+                    let content = board.content;
                     let modifiedAt = board.modifiedAt;
-                    addHTML(boardId, writer, title, contents, modifiedAt);
+                    addHTML(boardId, writer, title, content, modifiedAt);
                 }
             });
         }
 
         // 불러온 게시글을 html에 붙여줍니다.
-        function addHTML(boardId, writer, title, contents, modifiedAt) {
-            let tempHtml = makeMessage(boardId, writer, title, contents, modifiedAt);
+        function addHTML(boardId, writer, title, content, modifiedAt) {
+            let tempHtml = makeMessage(boardId, writer, title, content, modifiedAt);
             $('#cards-box').append(tempHtml);
         }
 
         // 게시글 형태를 만들어줍니다.
-        function makeMessage(boardId, writer, title, contents, modifiedAt) {
+        function makeMessage(boardId, writer, title, content, modifiedAt) {
             return `<div class="card">
                         <div class="metadata">
                            <div id="${boardId}-writer">
@@ -57,7 +58,63 @@
                         </div>
                     <h2 class='title' id="${boardId}-title">"${title}"</h2>
                         <div class="contents" id="${boardId}-contents" >
-                           ${contents}
+                           ${content}
+                        </div>
+                    </div>`;
+        }
+
+        function writeComment() {
+            // 1. 작성한 메모를 불러옵니다.
+            let content = $('#commentcontent').val();
+            let idx = location.href.split("boardId=")[1];
+            // 4. 전달할 data JSON으로 만듭니다.
+            let data = {'content': content};
+            $.ajax({
+                type: "POST",
+                url: `/comments/write/${idx}`,
+                contentType: "application/json", // JSON 형식으로 전달함을 알리기
+                data: JSON.stringify(data),
+                success: function (response) {
+                    console.log(response)
+                    alert('메시지가 성공적으로 작성되었습니다.');
+                    window.location.reload();
+                }
+            });
+        }
+
+        function getComments() {
+            $('#cards-box').empty();
+            let idx = location.href.split("boardId=")[1]; //localhost/detail.html?id=12
+            $.ajax({
+                type: "GET",
+                url: `/comments/list/${idx}`,
+                data: {},
+                success: function (response) {
+                    console.log(response)
+                    for(let i = 0; i< response.length; i++) {
+                        let comment = response[i];
+                        let commentid = comment.commentId;
+                        let commentwriter = comment.commentwriter;
+                        let content = comment.content;
+                        addHTML2(commentid, commentwriter, content);
+                    }
+                }
+            });
+        }
+        function addHTML2(commentid, commentwriter, content) {
+            let tempHtml2 = makeMessage2(commentid, commentwriter, content);
+            $('#comment-box').append(tempHtml2);
+        }
+
+        function makeMessage2(commentid, commentwriter, content) {
+            return `<div class="card">
+                        <div class="metadata">
+                           <div id="${commentid}-writer">
+                               ${commentwriter}
+                           </div>
+                        </div>
+                        <div id="${commentid}-content" >
+                           ${content}
                         </div>
                     </div>`;
         }
@@ -66,8 +123,18 @@
 </head>
 <body>
 <div id="cards-box">
+</div>
+<div>
+    <div class="mb-3">
+        <label class="form-label">내용</label>
+        <textarea class="form-control" id="commentcontent" rows="3"></textarea>
+    </div>
+    <div class="mybtn">
+        <button onclick="writeComment()">완료</button>
+    </div>
+</div>
+<div id="comment-box">
 
 </div>
-
 </body>
 </html>

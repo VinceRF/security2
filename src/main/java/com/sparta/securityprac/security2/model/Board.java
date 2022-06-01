@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 
 @Getter
@@ -25,6 +26,7 @@ public class Board extends Timestamped {
 
     @Column(nullable = false)
     private String content;
+
 
     public Board ( String title, String content){
         this.title = title;
