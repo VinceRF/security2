@@ -10,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor // 기본 생성자를 생성 이 어노테이션으로 아래에 주석이 달린 생성자를 생략 가능하다.
@@ -29,12 +31,12 @@ public class UserService {
 //    }
 
     //회원 중복 기능
-    public void registerUser(SignupRequestDto requestDto){
+    public void registerUser(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();
 //        String password = requestDto.getPassword();
         //회원 ID 중복 검사
         Optional<User> found = userRepository.findByUsername(username);
-        if (found.isPresent()){
+        if (found.isPresent()) {
             throw new IllegalArgumentException("중복된 ID 입니다.");
         }
 
@@ -42,14 +44,27 @@ public class UserService {
         UserRoleEnum role = UserRoleEnum.USER;
 
 
-        User user = new User(username,password,role);
+        User user = new User(username, password, role);
         userRepository.save(user);
         System.out.println(user);
 
     }
 
+    //유효성 검사
+    private void validate(SignupRequestDto requestDto) {
 
+        Pattern usernamePattern = Pattern
+                .compile("(?=.*[0-9])(?=.*[a-zA-Z]).{3,16}");
+        Matcher usernameMatcher = usernamePattern.matcher(requestDto.getUsername());
+        if (!usernameMatcher.matches()) {
+            throw new IllegalArgumentException("엨");
+        }
 
+        Pattern passwordPattern = Pattern.compile("(?=.*[0-9])(?=.*[a-zA-Z]).{4,16}");
+        Matcher passwordMatcher = passwordPattern.matcher(requestDto.getPassword());
+        if (!passwordMatcher.matches()) {
+            throw new IllegalArgumentException("엨");
+        }
 
-
+    }
 }
