@@ -107,14 +107,15 @@
                             let boardId = board.boardId;
                             let content = board.content;
                             let title = board.title;
+                            let writer = board.writer;
                             let modifiedAt = board.modifiedAt;
-                            addHTML(boardId, content, title, modifiedAt)
+                            addHTML(boardId, writer, content, title, modifiedAt)
                         }
                     }
                 })
             }
 
-            function addHTML(boardId, content, title, modifiedAt) {
+            function addHTML(boardId, writer, content, title, modifiedAt) {
                 let temp_html = `<a href="detail.html?boardId=${boardId}">
                                 <div class="card">
                                 <div class="card-header" id="${boardId}-title">
@@ -124,6 +125,7 @@
                                     <blockquote class="blockquote mb-0">
                                         <a id="${boardId}-content">${content}</a>
                                         <p class="time">${modifiedAt}</p>
+                                        <p id="${boardId}-writer">작성자: ${writer}</p>
                                 </div>
                             </div>`
                 $('#myboard').append(temp_html);
@@ -144,6 +146,9 @@
                     success: function (response) {
                         alert('메시지가 성공적으로 작성되었습니다.');
                         window.location.reload();
+                    },
+                    error: function() {
+                        window.location.href = '/user/loginView';
                     }
                 });
             }
