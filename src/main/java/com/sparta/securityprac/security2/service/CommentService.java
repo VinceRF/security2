@@ -57,4 +57,38 @@ public class CommentService {
 
         return responseDtoList;
     }
+
+    //코멘트 삭제
+    @Transactional
+    public void deleteComment(long commentId, UserDetailsImpl userDetails) {
+
+        User user = userDetails.getUser();
+
+        Comment foundComment = commentRepository.findById(commentId)
+                .orElseThrow(()->new IllegalArgumentException("엨"));
+
+        if (!user.getUserId().equals(foundComment.getUser().getUserId())) {
+            throw new IllegalArgumentException("엨");
+        }
+
+        // 댓글 삭제
+        commentRepository.delete(foundComment);
+    }
+
+    //댓글 수정
+    @Transactional
+    public void editComment(long commentId, UserDetailsImpl userDetails, CommentRequestDto requestDto) {
+
+
+        User user = userDetails.getUser();
+
+        Comment foundComment = commentRepository.findById(commentId)
+                .orElseThrow(()->new IllegalArgumentException("엨"));
+
+        if (!user.getUserId().equals(foundComment.getUser().getUserId())) {
+            throw new IllegalArgumentException("엨");
+        }
+
+        foundComment.editComment(requestDto.getContent());
+    }
 }

@@ -11,6 +11,7 @@
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
             crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <script>
         $(document).ready(function () {
@@ -24,6 +25,46 @@
                 window.location.href = '/user/loginView';
             }
         })
+
+        function showEdits(boardId) {
+            $(`#${boardId}-editarea`).show();
+            $(`#${boardId}-submit`).show();
+            $(`#${boardId}-delete`).show();
+            $(`#${boardId}-goback`).show();
+
+            $(`#${boardId}-content`).hide();
+            $(`#${boardId}-edit`).hide();
+        }
+
+        function hideEdits(boardId) {
+            $(`#${boardId}-editarea`).hide();
+            $(`#${boardId}-submit`).hide();
+            $(`#${boardId}-delete`).hide();
+            $(`#${boardId}-goback`).hide();
+
+            $(`#${boardId}-content`).show();
+            $(`#${boardId}-edit`).show();
+        }
+
+        function showEditComment(commentId) {
+            $(`#${commentId}-editarea2`).show();
+            $(`#${commentId}-submit2`).show();
+            $(`#${commentId}-delete2`).show();
+            $(`#${commentId}-goback2`).show();
+
+            $(`#${commentId}-content2`).hide();
+            $(`#${commentId}-edit2`).hide();
+        }
+
+        function hideEditComment(commentId) {
+            $(`#${commentId}-editarea2`).hide();
+            $(`#${commentId}-submit2`).hide();
+            $(`#${commentId}-delete2`).hide();
+            $(`#${commentId}-goback2`).hide();
+
+            $(`#${commentId}-content2`).show();
+            $(`#${commentId}-edit2`).show();
+        }
 
         $(document).ready(function () {
             getMessages();
@@ -40,6 +81,7 @@
                 data: {},
                 headers: { 'Authorization': $.cookie('token') },
                 success: function (response) {
+                    console.log(response)
                     let board = response;
                     let boardId = board.boardId;
                     let writer = board.writer;
@@ -68,10 +110,20 @@
                                ${modifiedAt}
                            </div>
                         </div>
-                    <h2 class='title' id="${boardId}-title">"${title}"</h2>
+                    <h2 class='title' id="${boardId}-title">${title}</h2>
                         <div class="contents" id="${boardId}-contents" >
                            ${content}
                         </div>
+                            <!--         수정              -->
+                            <div id="${boardId}-editarea" class="edit" style="display: none;">
+                            <textarea id="${boardId}-textarea" class="te-edit" cols="30" rows="5" style="width: 700px;"></textarea>
+                            </div>
+                        <div class="myicon">
+                                    <i class="fa-solid fa-pen-to-square" style="margin-right: 10px" id="${boardId}-edit" onclick="showEdits('${boardId}')"></i>
+                                    <i class="fa-solid fa-file-export" style="margin-right: 10px; display: none;" id="${boardId}-submit" onclick="submitEditBoard('${boardId}')"></i>
+                                    <i class="fa-solid fa-trash" style="margin-right: 10px; display: none;" id="${boardId}-delete" onclick="deleteboard('${boardId}')"></i>
+                                    <i class="fa-solid fa-rotate-left" style="margin-right: 10px; display: none;" id="${boardId}-goback" onclick="hideEdits('${boardId}')"></i>
+                                    </div>
                     </div>`;
         }
 
@@ -88,7 +140,6 @@
                 contentType: "application/json", // JSON 형식으로 전달함을 알리기
                 data: JSON.stringify(data),
                 success: function (response) {
-                    console.log(response)
                     alert('메시지가 성공적으로 작성되었습니다.');
                     window.location.reload();
                 }
@@ -107,30 +158,99 @@
                     console.log(response)
                     for(let i = 0; i< response.length; i++) {
                         let comment = response[i];
-                        let commentid = comment.commentId;
+                        let commentId = comment.commentId;
                         let commentwriter = comment.commentwriter;
                         let content = comment.content;
-                        addHTML2(commentid, commentwriter, content);
+                        addHTML2(commentId, commentwriter, content);
                     }
                 }
             });
         }
-        function addHTML2(commentid, commentwriter, content) {
-            let tempHtml2 = makeMessage2(commentid, commentwriter, content);
+        function addHTML2(commentId, commentwriter, content) {
+            let tempHtml2 = makeMessage2(commentId, commentwriter, content);
             $('#comment-box').append(tempHtml2);
         }
 
-        function makeMessage2(commentid, commentwriter, content) {
+        function makeMessage2(commentId, commentwriter, content) {
             return `<div class="card">
                         <div class="metadata">
-                           <div id="${commentid}-writer">
+                           <div id="${commentId}-writer">
                                ${commentwriter}
                            </div>
                         </div>
-                        <div id="${commentid}-content" >
+                        <div id="${commentId}-content2" >
                            ${content}
                         </div>
+                        <!--         수정              -->
+                            <div id="${commentId}-editarea2" class="edit" style="display: none;">
+                            <textarea id="${commentId}-textarea2" class="te-edit" cols="30" rows="5" style="width: 700px;"></textarea>
+                            </div>
+
+                        <div class="myicon">
+                                    <i class="fa-solid fa-pen-to-square" style="margin-right: 10px" id="${commentId}-edit2" onclick="showEditComment('${commentId}')"></i>
+                                    <i class="fa-solid fa-file-export" style="margin-right: 10px; display: none;" id="${commentId}-submit2" onclick="submitEditComment('${commentId}')"></i>
+                                    <i class="fa-solid fa-trash" style="margin-right: 10px; display: none;" id="${commentId}-delete2" onclick="deletecomment('${commentId}')"></i>
+                                    <i class="fa-solid fa-rotate-left" style="margin-right: 10px; display: none;" id="${commentId}-goback2" onclick="hideEditComment('${commentId}')"></i>
+                                    </div>
                     </div>`;
+        }
+
+        function deletecomment(commentId) {
+            $.ajax({
+                type: "DELETE",
+                url: `/comments/${commentId}`,
+                headers: { 'Authorization': $.cookie('token') },
+                success: function (response) {
+                    alert('메시지 삭제에 성공하였습니다.');
+                    window.location.reload();
+                }
+            })
+        }
+
+        function deleteboard(boardId) {
+            $.ajax({
+                type: "DELETE",
+                url: `/boards/${boardId}`,
+                headers: { 'Authorization': $.cookie('token') },
+                success: function (response) {
+                    alert('메시지 삭제에 성공하였습니다.');
+                    window.location.replace("/")
+                }
+            })
+        }
+
+        function submitEditBoard(boardId) {
+            let title = $(`#${boardId}-title`).text().trim();
+            let content = $(`#${boardId}-textarea`).val().trim();
+            let data = {'content': content, 'title': title};
+            $.ajax({
+                type: "PUT",
+                url: `/boards/${boardId}`,
+                headers: { 'Authorization': $.cookie('token') },
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function (response) {
+                    alert('메시지 변경에 성공하였습니다.');
+                    window.location.reload();
+                }
+            });
+        }
+
+        function submitEditComment(commentId) {
+            let content = $(`#${commentId}-textarea2`).val().trim();
+            let data = {'content': content};
+            $.ajax({
+                type: "PUT",
+                url: `/comments/${commentId}`,
+                headers: { 'Authorization': $.cookie('token') },
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function (response) {
+                    console.log(content)
+                    alert('메시지 변경에 성공하였습니다.');
+                    window.location.reload();
+                }
+            });
         }
 
     </script>

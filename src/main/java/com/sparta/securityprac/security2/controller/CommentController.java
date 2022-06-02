@@ -34,5 +34,24 @@ public class CommentController {
       return commentService.getCommentList(boardId);
     }
 
+  // 도안 댓글 삭제 API
+  @DeleteMapping("/comments/{commentId}")
+  public void deleteComment(
+          @PathVariable long commentId,
+          @AuthenticationPrincipal UserDetailsImpl userDetails
+  ) {
+    commentService.deleteComment(commentId, userDetails);
+  }
+
+  //댓글 수정
+  @PutMapping("/comments/{commentId}")
+  public void editComment(
+          @PathVariable long commentId,
+          @AuthenticationPrincipal UserDetailsImpl userDetails,
+          @RequestBody CommentRequestDto requestDto
+  ) {
+    commentService.editComment(commentId, userDetails, requestDto);
+  }
+
 
 }

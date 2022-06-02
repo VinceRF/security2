@@ -45,8 +45,7 @@ public class Comment extends Timestamped {
         this.commentWriter = user.getUsername();
     }
 
-
-
-
-
+    public void editComment(String content) {
+        this.content = content;
+    }
 }

@@ -109,6 +109,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtAuthFilter jwtFilter() throws Exception {
         List<String> skipPathList = new ArrayList<>();
 
+        // 토큰 넣는거는 이 리스트에다 주소 설정하면 안됀다!!!!!!!!!!!!!!!!!!!
         // Static 정보 접근 허용
         skipPathList.add("GET,/images/**");
         skipPathList.add("GET,/css/**");
@@ -122,6 +123,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         skipPathList.add("POST,/user/signup");
 
         skipPathList.add("GET,/**"); // 나는 static에 detail을 넣어놨기 때문에 주소는 localhost:8080/detail.html?뭐시기다 그래서 /뒤에 **을 붙여서 다 허용해야함
+
 
         skipPathList.add("GET,/boards/**");
 

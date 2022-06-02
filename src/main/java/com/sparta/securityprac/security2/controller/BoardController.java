@@ -27,10 +27,12 @@ public class BoardController {
     }
 
     @PutMapping("/boards/{boardId}")
-    public Long updateBoard(@PathVariable Long boardId, @RequestBody BoardRequestDto requestDto,
-                            @AuthenticationPrincipal UserDetailsImpl userDetails){
-        boardService.update(boardId,requestDto,userDetails);
-        return boardId;
+    public void editBoard(
+            @PathVariable long boardId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestBody BoardRequestDto requestDto
+    ) {
+        boardService.editBoard(boardId, userDetails, requestDto);
     }
 
 
@@ -45,5 +47,13 @@ public class BoardController {
         Board board =  boardRepository.findById(boardId).orElseThrow(
                 ()->new IllegalArgumentException("contentsId가 존재하지 않습니다."));
         return board;
+    }
+
+    @DeleteMapping("/boards/{boardId}")
+    public void deleteBoard(
+            @PathVariable long boardId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        boardService.deleteBoard(boardId, userDetails);
     }
 }
