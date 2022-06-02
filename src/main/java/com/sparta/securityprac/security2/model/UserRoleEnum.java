@@ -1,6 +1,20 @@
 package com.sparta.securityprac.security2.model;
 
 public enum UserRoleEnum {
-    GUEST, // 손님 권한 ( login 안 했을 때 )
-    USER // 유저 권한 ( login 했을 때 )
+
+    USER(Authority.USER);  // 사용자 권한
+
+    private final String authority;
+
+    UserRoleEnum(String authority) {
+        this.authority = authority;
+    }
+
+    public String getAuthority() {
+        return this.authority;
+    }
+
+    public static class Authority {
+        public static final String USER = "ROLE_USER";
+    }
 }

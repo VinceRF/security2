@@ -5,6 +5,7 @@ import com.sparta.securityprac.security2.model.UserRoleEnum;
 import com.sparta.securityprac.security2.repository.UserRepository;
 import com.sparta.securityprac.security2.requestdto.SignupRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,12 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor // 기본 생성자를 생성 이 어노테이션으로 아래에 주석이 달린 생성자를 생략 가능하다.
 public class UserService {
+//    @Autowired
+//    public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+//        this.passwordEncoder = passwordEncoder;
+//        this.userRepository = userRepository;
+//    }
+
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
